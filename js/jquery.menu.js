@@ -26,7 +26,9 @@
 
         $('ul.main-menu > li > ul li').click(function (event) {
             if ($(this).children().size() > 0) {
-                event.preventDefault();
+            	// Prevent click event to propagate to parent elements
+            	event.stopPropagation();
+            	// Automatically toggle submenu, if any
                 toggleSubMenu($(this));
             }
         });
@@ -167,64 +169,6 @@
     }
 }
 
-var ContextMenu = function () {
-    this.init = function () {
-
-        $('[data-context-menu]').each(function () {
-            $('#' + $(this).data('context-menu')).hide();
-        });
-
-        $('[data-context-menu]').click(function () {
-            var elementId = $(this).data('context-menu');
-            $el = $('#' + elementId);
-            $('.context-menu').not('#' + elementId).hide();
-            $('.context-menu.active').not('#' + elementId).removeClass('active');
-            $(this).addClass('active');
-            var left, top;
-
-            var pos = $(this).offset();
-            left = pos.left;
-            top = pos.top + $(this).fullHeight();
-
-            var windowWidth = Global.helper.getClientWidth();
-            if ($(this).data('context-menu-position') == 'left' || left + $el.fullWidth() > windowWidth) {
-                left = pos.left + $(this).fullWidth() - $el.fullWidth();
-            }
-
-            $el.css({
-                top: top,
-                left: left,
-                position: 'absolute'
-            });
-
-            if ($el.is(":hidden") == false) {
-                $('.active').removeClass('active');
-            }
-
-            $el.toggle()
-        });
-    }
-
-    hideContextMenu = function () {
-        $('.context-menu').hide();
-        $('.active').removeClass('active');
-    }
-
-    $(document).keyup(function (e) {
-        if (e.keyCode == 27) {
-            hideContextMenu();
-        }
-    });
-
-    $(document).bind('click', function (event) {
-        var target = $(event.target);
-        if (!target.parents().attr('data-context-menu') && !target.data('context-menu') && !target.hasClass('context-menu') && !target.parents().hasClass('context-menu')) {
-            hideContextMenu();
-        }
-    });
-}
-
 $(document).ready(function () {
     new MainMenu().init();
-    new ContextMenu().init();
 });
