@@ -25,11 +25,23 @@
         });
 
         $('ul.main-menu > li > ul li').click(function (event) {
-            if ($(this).children().size() > 0) {
-            	// Prevent click event to propagate to parent elements
-            	event.stopPropagation();
+			
+			// Prevent click event to propagate to parent elements
+			event.stopPropagation();
+
+			// Prevent any operations if item is disabled
+			if ($(this).hasClass(settings.disabledClass)) {
+                return;
+            }
+
+            // If item is active, check if there are submenus (ul elements inside current li)
+            if ($(this).has( "ul" ).length > 0) {
             	// Automatically toggle submenu, if any
                 toggleSubMenu($(this));
+            }
+            else{
+            	// If there are no submenus, close main menu.
+            	closeMainMenu();
             }
         });
 
@@ -141,7 +153,7 @@
             submenu.show();
 
             //el.mouseleave(function () {
-            //submenu.hide();
+            //	submenu.hide();
             //});
         }
 
